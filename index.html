@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Galería Azul</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .contenedor {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0066cc;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        .controles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #e0f7fa;
+            border-radius: 10px;
+        }
+
+        .grupo-entrada {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #004d80;
+        }
+
+        input, textarea {
+            padding: 10px;
+            border: 2px solid #b3e5fc;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            min-width: 200px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #00b0ff;
+        }
+
+        .boton {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .boton-agregar {
+            background: #007bff;
+            color: white;
+        }
+
+        .boton-limpiar {
+            background: #0288d1;
+            color: white;
+        }
+
+        .boton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .predefinidas {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .predefinidas h3 {
+            color: #004d80;
+            margin-bottom: 10px;
+        }
+
+        .boton-predefinido {
+            padding: 8px 15px;
+            background: #00b8d4;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        .boton-predefinido:hover {
+            background: #008ba3;
+        }
+
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tarjeta-imagen {
+            background: #f0faff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .tarjeta-imagen:hover {
+            transform: translateY(-5px);
+        }
+
+        .tarjeta-imagen img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .contenido-tarjeta {
+            padding: 15px;
+        }
+
+        .titulo-tarjeta {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #01579b;
+            margin-bottom: 8px;
+        }
+
+        .descripcion-tarjeta {
+            color: #0277bd;
+            line-height: 1.4;
+        }
+
+        .boton-eliminar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 188, 212, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tarjeta-imagen:hover .boton-eliminar {
+            opacity: 1;
+        }
+
+        .estado-vacio {
+            text-align: center;
+            padding: 50px 20px;
+            color: #0288d1;
+        }
+
+        .mensaje {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        .exito {
+            background: #d0f0fd;
+            color: #01579b;
+            border: 1px solid #81d4fa;
+        }
+
+        .error {
+            background: #ffcdd2;
+            color: #b71c1c;
+            border: 1px solid #ef9a9a;
+        }
+
+        @media (max-width: 768px) {
+            .controles {
+                flex-direction: column;
+            }
+
+            input, textarea {
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>🖼 Mi Galería Azul</h1>
+
+        <div class="mensaje" id="mensaje"></div>
+
+        <div class="controles">
+            <div class="grupo-entrada">
+                <label for="urlImagen">URL de la Imagen:</label>
+                <input type="url" id="urlImagen" placeholder="https://ejemplo.com/imagen.jpg">
+            </div>
+            
+            <div class="grupo-entrada">
+                <label for="tituloImagen">Título:</label>
+                <input type="text" id="tituloImagen" placeholder="Título de la imagen">
+            </div>
+            
+            <div class="grupo-entrada">
+                <label for="descripcionImagen">Descripción:</label>
+                <textarea id="descripcionImagen" placeholder="Descripción..." rows="2"></textarea>
+            </div>
+            
+            <div>
+                <button class="boton boton-agregar" onclick="agregarImagen()">Agregar Imagen</button>
+                <button class="boton boton-limpiar" onclick="limpiarGaleria()">Limpiar Todo</button>
+            </div>
+        </div>
+
+        <div class="predefinidas">
+            <h3>Imágenes de Ejemplo</h3>
+            <button class="boton-predefinido" onclick="agregarPredefinida('https://picsum.photos/400/300?random=1', 'Paisaje', 'Hermoso paisaje natural')">🏔 Paisaje</button>
+            <button class="boton-predefinido" onclick="agregarPredefinida('https://picsum.photos/400/300?random=2', 'Ciudad', 'Arquitectura urbana')">🏙 Ciudad</button>
+            <button class="boton-predefinido" onclick="agregarPredefinida('https://picsum.photos/400/300?random=3', 'Naturaleza', 'Vida silvestre')">🌿 Naturaleza</button>
+            <button class="boton-predefinido" onclick="agregarPredefinida('https://picsum.photos/400/300?random=4', 'Arte', 'Composición artística')">🎨 Arte</button>
+        </div>
+
+        <div class="galeria" id="galeria">
+            <div class="estado-vacio">
+                <h3>Tu galería está vacía</h3>
+                <p>Agrega algunas imágenes para comenzar</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let listaImagenes = [];
+        let contadorId = 1;
+
+        function mostrarMensaje(texto, tipo) {
+            const elementoMensaje = document.getElementById('mensaje');
+            elementoMensaje.textContent = texto;
+            elementoMensaje.className = `mensaje ${tipo}`;
+            elementoMensaje.style.display = 'block';
+
+            setTimeout(() => {
+                elementoMensaje.style.display = 'none';
+            }, 3000);
+        }
+
+        function agregarImagen() {
+            const urlImagen = document.getElementById('urlImagen').value.trim();
+            const tituloImagen = document.getElementById('tituloImagen').value.trim();
+            const descripcionImagen = document.getElementById('descripcionImagen').value.trim();
+
+            if (!urlImagen) {
+                mostrarMensaje('Por favor ingresa una URL', 'error');
+                return;
+            }
+
+            if (!tituloImagen) {
+                mostrarMensaje('Por favor ingresa un título', 'error');
+                return;
+            }
+
+            const nuevaImagen = {
+                identificador: contadorId++,
+                url: urlImagen,
+                titulo: tituloImagen,
+                descripcion: descripcionImagen || 'Sin descripción'
+            };
+
+            listaImagenes.push(nuevaImagen);
+            renderizarGaleria();
+            limpiarFormulario();
+            mostrarMensaje('¡Imagen agregada!', 'exito');
+        }
+
+        function agregarPredefinida(urlImagen, tituloImagen, descripcionImagen) {
+            const nuevaImagen = {
+                identificador: contadorId++,
+                url: urlImagen,
+                titulo: tituloImagen,
+                descripcion: descripcionImagen
+            };
+
+            listaImagenes.push(nuevaImagen);
+            renderizarGaleria();
+            mostrarMensaje('¡Imagen agregada!', 'exito');
+        }
+
+        function eliminarImagen(identificador) {
+            listaImagenes = listaImagenes.filter(imagen => imagen.identificador !== identificador);
+            renderizarGaleria();
+            mostrarMensaje('Imagen eliminada', 'exito');
+        }
+
+        function limpiarGaleria() {
+            if (listaImagenes.length === 0) {
+                mostrarMensaje('La galería ya está vacía', 'error');
+                return;
+            }
+
+            if (confirm('¿Eliminar todas las imágenes?')) {
+                listaImagenes = [];
+                renderizarGaleria();
+                mostrarMensaje('Galería limpiada', 'exito');
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('urlImagen').value = '';
+            document.getElementById('tituloImagen').value = '';
+            document.getElementById('descripcionImagen').value = '';
+        }
+
+        function renderizarGaleria() {
+            const contenedorGaleria = document.getElementById('galeria');
+
+            if (listaImagenes.length === 0) {
+                contenedorGaleria.innerHTML = `
+                    <div class="estado-vacio">
+                        <h3>Tu galería está vacía</h3>
+                        <p>Agrega algunas imágenes para comenzar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contenedorGaleria.innerHTML = listaImagenes.map(imagen => `
+                <div class="tarjeta-imagen">
+                    <img src="${imagen.url}" alt="${imagen.titulo}" onerror="this.src='https://via.placeholder.com/400x200/00bcd4/ffffff?text=Error'">
+                    <button class="boton-eliminar" onclick="eliminarImagen(${imagen.identificador})">×</button>
+                    <div class="contenido-tarjeta">
+                        <div class="titulo-tarjeta">${imagen.titulo}</div>
+                        <div class="descripcion-tarjeta">${imagen.descripcion}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('keypress', function(evento) {
+            if (evento.key === 'Enter' && evento.target.tagName === 'INPUT') {
+                agregarImagen();
+            }
+        });
+
+        renderizarGaleria();
+    </script>
+</body>
+</html>
